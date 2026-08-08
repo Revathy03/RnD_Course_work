@@ -1,0 +1,44 @@
+gdsio version :1.12
+Usage [using config file]: gdsio rw-sample.gdsio
+Usage [using cmd line options]:/usr/local/cuda/gds/tools/gdsio 
+         -f <file name>
+         -D <directory name>
+         -d <gpu_index (refer nvidia-smi)>
+         -n <numa node>
+         -m <memory type(0 - (cudaMalloc), 1 - (cuMem), 2 - (cudaMallocHost), 3 - (malloc) 4 - (mmap))>
+         -w <number of threads for a job>
+         -s <file size(K|M|G)>
+         -o <start offset(K|M|G)>
+         -i <io_size(K|M|G)> <min_size:max_size:step_size>
+         -p <enable nvlinks> 
+         -b <skip bufregister> 
+         -V <verify IO>
+         -x <xfer_type> [0(GPU_DIRECT), 1(CPU_ONLY), 2(CPU_GPU), 3(CPU_ASYNC_GPU), 4(CPU_CACHED_GPU), 5(GPU_DIRECT_ASYNC), 6(GPU_BATCH), 7(GPU_BATCH_STREAM)]
+         -B <batch size>
+         -I <(read) 0|(write)1| (randread) 2| (randwrite) 3>
+         -T <duration in seconds>
+         -k <random_seed> (number e.g. 3456) to be used with random read/write> 
+         -U <use unaligned(4K) random offsets>
+         -R <fill io buffer with random data>
+         -F <refill io buffer with random data during each write>
+         -a <alignment size in case of random IO>
+         -M <mixed_rd_wr_percentage in case of regular batch mode>
+         -P <rdma url>
+         -J <per job statistics>
+
+xfer_type:
+0 - Storage->GPU (GDS)
+1 - Storage->CPU
+2 - Storage->CPU->GPU
+3 - Storage->CPU->GPU_ASYNC
+4 - Storage->PAGE_CACHE->CPU->GPU
+5 - Storage->GPU_ASYNC
+6 - Storage->GPU_BATCH
+7 - Storage->GPU_BATCH_STREAM
+
+Note:
+read test (-I 0) with verify option (-V) should be used with files written (-I 1) with -V option
+read test (-I 2) with verify option (-V) should be used with files written (-I 3) with -V option, using same random seed (-k),
+same number of threads(-w), offset(-o), and data size(-s)
+write test (-I 1/3) with verify option (-V) will perform writes followed by read
+
