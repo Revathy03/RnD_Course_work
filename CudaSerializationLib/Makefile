@@ -6,24 +6,27 @@ GDS_PATH ?= $(CUDA_PATH)
 
 # CUDA Compiler (Required for kernels)
 NVCC = nvcc
-NVCC_FLAGS = -std=c++17 -I. -I$(CUDA_PATH)/include -arch=sm_70 
+NVCC_FLAGS = -std=c++17 -I./include -I$(CUDA_PATH)/include -arch=sm_70 
 
 # Linking
 LDFLAGS = -L$(CUDA_PATH)/lib64 -lcudart -lcufile
 
-TARGET = main
-SRC = main.cu
+TARGETS = gds_example main_toy_example
 
-all: $(TARGET)
+all: $(TARGETS)
 
-$(TARGET): $(SRC) ObjectStore.hpp
-	$(NVCC) $(NVCC_FLAGS) $(SRC) -o $(TARGET) $(LDFLAGS)
+gds_example: src/gds_example.cu include/ObjectStore.hpp include/CudaSerialization.hpp
+	$(NVCC) $(NVCC_FLAGS) src/gds_example.cu -o gds_example $(LDFLAGS)
+
+main_toy_example: src/main_toy_example.cu include/ObjectStore.hpp include/CudaSerialization.hpp
+	$(NVCC) $(NVCC_FLAGS) src/main_toy_example.cu -o main_toy_example $(LDFLAGS)
 
 run: all
-	./$(TARGET)
+	./gds_example
+	./main_toy_example
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGETS)
 	rm -rf data/
 
 .PHONY: all run clean
